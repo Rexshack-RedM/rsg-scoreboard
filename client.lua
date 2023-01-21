@@ -6,8 +6,7 @@ local PlayerOptin = {}
 RegisterNetEvent('RSGCore:Client:OnPlayerLoaded')
 AddEventHandler('RSGCore:Client:OnPlayerLoaded', function()
     isLoggedIn = true
-    RSGCore.Functions.TriggerCallback('rsg-scoreboard:server:GetConfig', function(
-        config) Config.IllegalActions = config end)
+    RSGCore.Functions.TriggerCallback('rsg-scoreboard:server:GetConfig', function(config) Config.IllegalActions = config end)
 end)
 
 RegisterNetEvent('rsg-scoreboard:client:SetActivityBusy')
@@ -18,49 +17,40 @@ end)
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
-        if IsControlJustReleased(0, 0x3C3DD371) and IsInputDisabled(0) then -- PAGEDOWN
+        if IsControlJustReleased(0, RSGCore.Shared.Keybinds['PGDN']) and IsInputDisabled(0) then -- PAGEDOWN
             if not scoreboardOpen then
-                RSGCore.Functions.TriggerCallback(
-                    'rsg-scoreboard:server:GetPlayersArrays',
-                    function(playerList)
-                        RSGCore.Functions.TriggerCallback(
-                            'rsg-scoreboard:server:GetActivity',
-                            function(cops, ambulance)
-                                RSGCore.Functions.TriggerCallback(
-                                    "rsg-scoreboard:server:GetCurrentPlayers",
-                                    function(Players)
-                                        PlayerOptin = playerList
-                                        Config.CurrentCops = cops
-
-                                        SendNUIMessage({
-                                            action = "open",
-                                            players = Players,
-                                            maxPlayers = Config.MaxPlayers,
-                                            requiredCops = Config.IllegalActions,
-                                            currentCops = Config.CurrentCops,
-                                            currentAmbulance = ambulance
-                                        })
-                                        scoreboardOpen = true
-                                    end)
-                            end)
+                RSGCore.Functions.TriggerCallback('rsg-scoreboard:server:GetPlayersArrays', function(playerList)
+                    RSGCore.Functions.TriggerCallback('rsg-scoreboard:server:GetActivity', function(police, medic)
+                        RSGCore.Functions.TriggerCallback("rsg-scoreboard:server:GetCurrentPlayers", function(Players)
+                            PlayerOptin = playerList
+                            if Config.Debug == true then
+                                print('current police '..police)
+                                print('current medic '..medic)
+                            end
+                            SendNUIMessage({
+                                action = "open",
+                                players = Players,
+                                maxPlayers = Config.MaxPlayers,
+                                requiredPolice = Config.IllegalActions,
+                                currentPolice = police,
+                                currentMedic = medic
+                            })
+                            scoreboardOpen = true
+                        end)
                     end)
+                end)
             else
                 SendNUIMessage({action = "close"})
                 scoreboardOpen = false
             end
-
             if scoreboardOpen then
-                for _, player in pairs(GetPlayersFromCoords(GetEntityCoords(
-                                                                PlayerPedId()),
-                                                            10.0)) do
+                for _, player in pairs(GetPlayersFromCoords(GetEntityCoords(PlayerPedId()), 10.0)) do
                     local PlayerId = GetPlayerServerId(player)
                     local PlayerPed = GetPlayerPed(player)
                     local PlayerName = GetPlayerName(player)
                     local PlayerCoords = GetEntityCoords(PlayerPed)
-
                     if not PlayerOptin[PlayerId].permission then
-                        DrawText3D(PlayerCoords.x, PlayerCoords.y,
-                                   PlayerCoords.z + 1.0, '[' .. PlayerId .. ']')
+                        DrawText3D(PlayerCoords.x, PlayerCoords.y, PlayerCoords.z + 1.0, '[' .. PlayerId .. ']')
                     end
                 end
             end
@@ -94,8 +84,7 @@ GetPlayersFromCoords = function(coords, distance)
     for _, player in pairs(players) do
         local target = GetPlayerPed(player)
         local targetCoords = GetEntityCoords(target)
-        local targetdistance = #(targetCoords -
-                                   vector3(coords.x, coords.y, coords.z))
+        local targetdistance = #(targetCoords - vector3(coords.x, coords.y, coords.z))
         if targetdistance <= distance then
             table.insert(closePlayers, player)
         end

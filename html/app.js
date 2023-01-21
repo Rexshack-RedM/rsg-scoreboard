@@ -16,14 +16,14 @@ const Open = (data) => {
   $(".scoreboard-block").fadeIn(150);
   $("#total-players").html("<p>" + data.players + " of " + data.maxPlayers + "</p>");
 
-  $.each(data.requiredCops, (i, category) => {
+  $.each(data.requiredPolice, (i, category) => {
     var beam = $(".scoreboard-info").find('[data-type="' + i + '"]');
     var status = $(beam).find(".info-beam-status");
 
     // For anyone wondering, this does work, you can leave the brackets out if you have just one line of code to execute
     if (category.busy)
       $(status).html('<i class="fas fa-clock"></i>');
-    else if (data.currentCops >= category.minimumPolice)
+    else if (data.currentPolice >= category.minimumPolice)
       $(status).html('<i class="fas fa-check"></i>');
     else
       $(status).html('<i class="fas fa-times"></i>');

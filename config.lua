@@ -1,21 +1,20 @@
 Config = Config or {}
 
--- Open scoreboard key
-Config.OpenKey = 0x05CA7C52
+-- debug on/off
+Config.Debug = false
 
 -- Max Server Players
-Config.MaxPlayers = GetConvarInt('sv_maxclients', 64) -- It returnes 64 if it cant find the Convar Int
+Config.MaxPlayers = GetConvarInt('sv_maxclients', 48) -- It returnes 48 if it cant find the Convar Int
 
 -- Minimum Police for Actions
 Config.IllegalActions = {
-    ["storerobbery"] = {minimum = 2, busy = false},
-    ["trainrobbery"] = {minimum = 3, busy = false},
-    ["bankrobbery"] = {minimum = 3, busy = false},
-    ["wagonrobbery"] = {minimum = 5, busy = false}
+    ["valbankrobbery"] = {minimumPolice = 1, busy = false},
+    ["rhobankrobbery"] = {minimumPolice = 1, busy = false},
+    ["contraband"]     = {minimumPolice = 1, busy = false},
 }
 
 -- Current Cops Online
-Config.CurrentCops = 0
+Config.CurrentPolice = 0
 
 -- Current Ambulance / Doctors Online
-Config.CurrentAmbulance = 0
+Config.CurrentMedic = 0

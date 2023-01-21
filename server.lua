@@ -10,7 +10,7 @@ end)
 
 RSGCore.Functions.CreateCallback('rsg-scoreboard:server:GetActivity', function(source, cb)
     local PoliceCount = 0
-    local AmbulanceCount = 0
+    local MedicCount = 0
 
     for k, v in pairs(RSGCore.Functions.GetPlayers()) do
         local Player = RSGCore.Functions.GetPlayer(v)
@@ -19,13 +19,13 @@ RSGCore.Functions.CreateCallback('rsg-scoreboard:server:GetActivity', function(s
                 PoliceCount = PoliceCount + 1
             end
 
-            if ((Player.PlayerData.job.name == "ambulance" or Player.PlayerData.job.name == "doctor") and Player.PlayerData.job.onduty) then
-                AmbulanceCount = AmbulanceCount + 1
+            if (Player.PlayerData.job.name == "medic" and Player.PlayerData.job.onduty) then
+                MedicCount = MedicCount + 1
             end
         end
     end
 
-    cb(PoliceCount, AmbulanceCount)
+    cb(PoliceCount, MedicCount)
 end)
 
 RSGCore.Functions.CreateCallback('rsg-scoreboard:server:GetConfig', function(source, cb)
